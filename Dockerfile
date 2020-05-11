@@ -7,7 +7,7 @@ RUN apk add --update gcc musl-dev
 # removing apk cache
 RUN rm -rf /var/cache/apk/*
 
-RUN /app
+RUN mkdir -p /app
 COPY . /app/
 WORKDIR /app
 

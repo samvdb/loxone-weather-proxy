@@ -21,13 +21,14 @@ func (s *Service) GetForecast(coord string, asl string) (interface{}, error) {
 	if len(ce) != 2 {
 		return nil, fmt.Errorf("coords are not valid: %s", coord)
 	}
-	longitude, err := strconv.ParseFloat(ce[0], 64)
+	// loxone reverses coordinates
+	longitude, err := strconv.ParseFloat(ce[1], 64)
 	if err != nil {
-		return nil, fmt.Errorf("cannot parse longitude: %s", ce[0])
+		return nil, fmt.Errorf("cannot parse longitude: %s", ce[1])
 	}
-	latitude, err := strconv.ParseFloat(ce[1], 64)
+	latitude, err := strconv.ParseFloat(ce[0], 64)
 	if err != nil {
-		return nil, fmt.Errorf("cannot parse latitude: %s", ce[1])
+		return nil, fmt.Errorf("cannot parse latitude: %s", ce[0])
 	}
 	log.WithFields(log.Fields{
 		"longitude": longitude,

@@ -43,7 +43,7 @@ func main() {
 
 func WeatherHandler(w http.ResponseWriter, r *http.Request) {
 	asl := r.URL.Query().Get("asl")
-	coord := r.URL.Query().Get("coord") // 4.869030,50.993290
+	coord := r.URL.Query().Get("coord") // 50.993290,4.869030 // reverse coordinates ...
 	format := r.URL.Query().Get("format")
 
 	result, err := service.GetForecast(coord, asl)

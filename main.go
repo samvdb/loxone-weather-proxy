@@ -31,7 +31,7 @@ func main() {
 	service = Service{apiKey}
 
 	r := mux.NewRouter()
-	r.HandleFunc("/forecast", WeatherHandler)
+	r.HandleFunc("/forecast/", WeatherHandler)
 
 	loggedRouter := LoggingMiddlewar(r)
 

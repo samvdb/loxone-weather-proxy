@@ -13,7 +13,9 @@ var service Service
 func main() {
 
 	var (
-		httpAddr = flag.String("http.addr", ":6066", "Address for HTTP server")
+		httpAddr  = flag.String("http.addr", ":6066", "Address for HTTP server")
+		verbosity = flag.String("verbosity", "info", "Log verbosity")
+		jsonFile  = flag.String("file", "", "Local json file to use instead of weather api")
 	)
 
 	flag.Parse()
@@ -22,13 +24,17 @@ func main() {
 			DisableColors: false,
 			FullTimestamp: true,
 		})
+		lvl, err := log.ParseLevel(*verbosity)
+		if err == nil {
+			log.SetLevel(lvl)
+		}
 	}
-	apiKey :=  os.Getenv("DARKSKY_APIKEY")
+	apiKey := os.Getenv("DARKSKY_APIKEY")
 	if apiKey == "" {
 		log.Fatal("missing required environment variable DARKSKY_APIKEY")
 		os.Exit(1)
 	}
-	service = Service{apiKey}
+	service = Service{apiKey, *jsonFile}
 
 	r := mux.NewRouter()
 	r.HandleFunc("/forecast/", WeatherHandler)
@@ -54,9 +60,9 @@ func WeatherHandler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Vary", "Accept-Encoding")
 		w.Header().Set("Connection", "close")
 		w.Header().Set("Transfer-Encoding", "chunked")
-		if format == "csv" {
-			w.Header().Set("Content-Type", "text/plain")
-			service.WriteCSV(w, result)
+		if format == "json" {
+			w.Header().Set("Content-Type", "text/json")
+			service.WriteJSON(w, result)
 		} else {
 			w.Header().Set("Content-Type", "text/xml")
 			service.WriteXML(w, result)

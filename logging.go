@@ -1,65 +1,32 @@
 package main
 
 import (
-	log "github.com/sirupsen/logrus"
+	"github.com/justinas/alice"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/hlog"
 	"net/http"
-	"runtime/debug"
 	"time"
 )
 
-// responseWriter is a minimal wrapper for http.ResponseWriter that allows the
-// written HTTP status code to be captured for logging.
-type responseWriter struct {
-	http.ResponseWriter
-	status      int
-	wroteHeader bool
-}
+func LogHttp(log zerolog.Logger) alice.Chain {
+	c := alice.New()
 
-func wrapResponseWriter(w http.ResponseWriter) *responseWriter {
-	return &responseWriter{ResponseWriter: w}
-}
+	// Install the logger handler with default output on the console
+	c = c.Append(hlog.NewHandler(log))
 
-func (rw *responseWriter) Status() int {
-	return rw.status
-}
-
-func (rw *responseWriter) WriteHeader(code int) {
-	if rw.wroteHeader {
-		return
-	}
-
-	rw.status = code
-	rw.ResponseWriter.WriteHeader(code)
-	rw.wroteHeader = true
-
-	return
-}
-
-func LoggingMiddlewar(next http.Handler) http.Handler {
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		defer func() {
-			if err := recover(); err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
-				log.WithFields(log.Fields{
-					"trace": debug.Stack(),
-					"err":   err,
-				})
-			}
-		}()
-
-		start := time.Now()
-		wrapped := wrapResponseWriter(w)
-		next.ServeHTTP(wrapped, r)
-		log.WithFields(log.Fields{
-			"status":   wrapped.status,
-			"method":   r.Method,
-			"path":     r.URL.EscapedPath(),
-			"asl":      r.URL.Query().Get("asl"),
-			"coord":    r.URL.Query().Get("coord"),
-			"format":   r.URL.Query().Get("format"),
-			"duration": time.Since(start),
-		}).Info("received request")
-	}
-
-	return http.HandlerFunc(fn)
+	// Install some provided extra handler to set some request's context fields.
+	// Thanks to that handler, all our logs will come with some prepopulated fields.
+	c = c.Append(hlog.AccessHandler(func(r *http.Request, status, size int, duration time.Duration) {
+		hlog.FromRequest(r).Info().
+			Str("method", r.Method).
+			Str("url", r.URL.String()).
+			Int("status", status).
+			Int("size", size).
+			Dur("duration", duration).
+			Msg("")
+	}))
+	c = c.Append(hlog.RemoteAddrHandler("ip"))
+	c = c.Append(hlog.UserAgentHandler("user_agent"))
+	c = c.Append(hlog.RefererHandler("referer"))
+	c = c.Append(hlog.RequestIDHandler("req_id", "Request-Id"))
 }

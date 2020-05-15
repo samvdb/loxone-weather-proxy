@@ -1,13 +1,28 @@
 language: go
 
+env:
+  global:
+    - CACHE_NAME=${TRAVIS_ARCH}
+    - GO111MODULE=on
+    - GOPROXY=https://proxy.golang.org
+# needed only if you use the docker pipe
 services:
   - docker
 
-before_install:
-  - docker build --no-cache -t ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT} .
-  - docker tag  ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT} ${TRAVIS_REPO_SLUG}:latest
-
 script:
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker push ${TRAVIS_REPO_SLUG}:${TRAVIS_COMMIT}
-  - docker push ${TRAVIS_REPO_SLUG}:latest
+  - go test ./... # replace this with your test script
+  - curl -sfL https://git.io/goreleaser | sh -s -- check # check goreleaser config for deprecations
+
+after_success:
+  # docker login is required if you want to push docker images.
+  # DOCKER_PASSWORD should be a secret in your .travis.yml configuration.
+  - test -n "$TRAVIS_TAG" && docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+
+# calls goreleaser
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: curl -sL https://git.io/goreleaser | bash
+    on:
+      tags: true
+      condition: $TRAVIS_OS_NAME = linux

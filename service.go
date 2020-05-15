@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -17,6 +17,9 @@ type Service struct {
 }
 
 func (s *Service) GetForecast(coord string, asl string) (interface{}, error) {
+	log.Info().Str("asl", asl).
+		Str("coord", coord).
+		Msg("received request")
 	ce := strings.Split(coord, ",")
 	if len(ce) != 2 {
 		return nil, fmt.Errorf("coords are not valid: %s", coord)
@@ -30,10 +33,7 @@ func (s *Service) GetForecast(coord string, asl string) (interface{}, error) {
 	if err != nil {
 		return nil, fmt.Errorf("cannot parse latitude: %s", ce[1])
 	}
-	log.WithFields(log.Fields{
-		"longitude": longitude,
-		"latitude":  latitude,
-	}).Info("request report from darkSky API")
+	log.Info().Float64("longitude", longitude).Float64("latitude", latitude).Msg("request report from darkSky API")
 	result, err := s.downloadReport(longitude, latitude)
 
 	return result, err
@@ -118,14 +118,14 @@ func (s *Service) WriteCSV(w http.ResponseWriter, result interface{}) {
 	report, ok := result.(*DarkSky_Forecast)
 	if !ok {
 		w.WriteHeader(http.StatusInternalServerError)
-		log.Errorf("cannot cast %v to DarkSky_Forecast", result)
+		log.Error().Msgf("cannot cast %v to DarkSky_Forecast", result)
 		return
 	}
 
 	response, err := json.Marshal(report)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		log.WithField("result", report).WithError(err).Error("cannot marshall object")
+		log.Error().Interface("result", report).Err(err).Msg("cannot marshall object")
 		return
 	}
 
@@ -137,7 +137,7 @@ func (s *Service) WriteXML(w http.ResponseWriter, result interface{}) {
 	report, ok := result.(*DarkSky_Forecast)
 	if !ok {
 		w.WriteHeader(http.StatusInternalServerError)
-		log.Errorf("cannot cast %v to DarkSky_Forecast", result)
+		log.Error().Msgf("cannot cast %v to DarkSky_Forecast", result)
 		return
 	}
 

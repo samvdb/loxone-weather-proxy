@@ -1,4 +1,8 @@
-# loxone Weather proxy 
+
+
+[![Build Status](https://travis-ci.com/samvdb/loxone-weather-proxy.svg?branch=master)](https://travis-ci.com/samvdb/loxone-weather-proxy)
+
+# Overview 
 
 Written in Go.
 

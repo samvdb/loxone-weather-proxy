@@ -3,29 +3,40 @@ package main
 import (
 	"flag"
 	"github.com/gorilla/mux"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"net/http"
 	"os"
 )
 
 var service Service
 
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
+
 func main() {
 
 	var (
 		httpAddr = flag.String("http.addr", ":6066", "Address for HTTP server")
+		debug    = flag.Bool("debug", false, "sets log level to debug")
 	)
 
 	flag.Parse()
-	{
-		log.SetFormatter(&log.TextFormatter{
-			DisableColors: false,
-			FullTimestamp: true,
-		})
+
+	// Default level for this example is info, unless debug flag is present
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	if *debug {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	}
-	apiKey :=  os.Getenv("DARKSKY_APIKEY")
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
+	log.Info().Str("version", version).Str("commit", commit).Str("date", date).Msg("")
+
+	apiKey := os.Getenv("DARKSKY_APIKEY")
 	if apiKey == "" {
-		log.Fatal("missing required environment variable DARKSKY_APIKEY")
+		log.Fatal().Msg("missing required environment variable DARKSKY_APIKEY")
 		os.Exit(1)
 	}
 	service = Service{apiKey}
@@ -33,10 +44,10 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/forecast/", WeatherHandler)
 
-	loggedRouter := LoggingMiddlewar(r)
+	loggedRouter := LoggingMiddleware(r)
 
 	if err := http.ListenAndServe(*httpAddr, loggedRouter); err != nil {
-		log.WithField("status", "fatal").WithError(err).Fatal("fatal error")
+		log.Fatal().Str("status", "fatal").Err(err).Msg("fatal error")
 		os.Exit(1)
 	}
 }
@@ -48,7 +59,7 @@ func WeatherHandler(w http.ResponseWriter, r *http.Request) {
 
 	result, err := service.GetForecast(coord, asl)
 	if err != nil {
-		log.WithFields(log.Fields{"result": result}).WithError(err).Error("error while getting forecast")
+		log.Error().Interface("result", result).Err(err).Msg("error while getting forecast")
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
 		w.Header().Set("Vary", "Accept-Encoding")

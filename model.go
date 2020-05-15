@@ -5,12 +5,6 @@ import (
 	"time"
 )
 
-type DarkSky_ForecastRequest struct {
-	Extend string `json:"extend"` // hourly
-	Language string `json:"lang"` // de
-	Units string `json:"units"` // ca
-}
-
 type DarkSky_Forecast struct {
 	Latitude float64 `json:"latitude"`
 	Longitude float64 `json:"longitude"`

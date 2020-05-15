@@ -42,11 +42,10 @@ func main() {
 	service = Service{apiKey}
 
 	r := mux.NewRouter()
-	r.HandleFunc("/forecast/", WeatherHandler)
+	c := LogHttp(log.Logger)
+	r.Handle("/forecast/", c.Then(http.HandlerFunc(WeatherHandler)))
 
-	loggedRouter := LoggingMiddleware(r)
-
-	if err := http.ListenAndServe(*httpAddr, loggedRouter); err != nil {
+	if err := http.ListenAndServe(*httpAddr, r); err != nil {
 		log.Fatal().Str("status", "fatal").Err(err).Msg("fatal error")
 		os.Exit(1)
 	}

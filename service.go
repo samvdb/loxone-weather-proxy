@@ -6,7 +6,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"io/ioutil"
 	"net/http"
-	"net/http/httputil"
 	"os"
 	"strconv"
 	"strings"

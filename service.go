@@ -89,8 +89,8 @@ func (s *Service) downloadReport(longitude, latitude float64) (*DarkSky_Forecast
 	}
 	var result DarkSky_Forecast
 	defer resp.Body.Close()
-	dump, _ := httputil.DumpResponse(resp, true)
-	log.Debug().Str("response", string(dump)).Msg("api response received")
+	//dump, _ := httputil.DumpResponse(resp, true)
+	log.Debug().Msg("api response received")
 	json.NewDecoder(resp.Body).Decode(&result)
 
 	return &result, nil

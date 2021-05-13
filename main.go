@@ -45,6 +45,8 @@ func main() {
 	r := mux.NewRouter()
 	c := LogHttp(log.Logger)
 	r.Handle("/forecast/", c.Then(http.HandlerFunc(WeatherHandler)))
+	
+	r.Handle("/interface/api", c.Then(http.HandlerFunc(ApiHandler)))
 
 	if err := http.ListenAndServe(*httpAddr, r); err != nil {
 		log.Fatal().Str("status", "fatal").Err(err).Msg("fatal error")
@@ -73,4 +75,27 @@ func WeatherHandler(w http.ResponseWriter, r *http.Request) {
 			service.WriteXML(w, result)
 		}
 	}
+}
+
+
+func ApiHandler(w http.ResponseWriter, r *http.Request) {
+		log.Info("received /interface/api call")
+		w.Header().Set("Vary", "Accept-Encoding")
+		w.Header().Set("Connection", "close")
+		w.Header().Set("Transfer-Encoding", "chunked")
+		w.Header().Set("Content-Type", "text/json")
+		result := map[string]string{
+			"1": "2100-01-01",
+			"2": "2100-01-01",
+		}
+		response, err := json.Marshal(result)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Error().Interface("result", result).Err(err).Msg("cannot marshall object")
+			return
+		}
+	
+		w.WriteHeader(http.StatusOK)
+		w.Write(response)
+	
 }

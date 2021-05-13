@@ -89,7 +89,7 @@ func (s *Service) downloadReport(longitude, latitude float64) (*DarkSky_Forecast
 	var result DarkSky_Forecast
 	defer resp.Body.Close()
 	//dump, _ := httputil.DumpResponse(resp, true)
-	log.Debug().Msg("api response received")
+	//log.Debug().Msg("api response received")
 	json.NewDecoder(resp.Body).Decode(&result)
 
 	return &result, nil
@@ -152,7 +152,7 @@ func (s *Service) WriteXML(w http.ResponseWriter, result interface{}) {
 	}
 	xml += "</metdata_feature_collection>\n"
 
-	log.Debug().Str("xml", xml).Msg("xml data")
+	//log.Debug().Str("xml", xml).Msg("xml data")
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(xml))

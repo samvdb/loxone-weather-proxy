@@ -8,11 +8,9 @@ builds:
   - CGO_ENABLED=0
   - GO111MODULE=on
   binary: proxy
-  ldflags: -s -w -X github.com/samvdb/loxone-weather-proxy/common/hugo.buildDate={{.Date}} -X github.com/gohugoio/hugo/common/hugo.commitHash={{ .ShortCommit }}
   id: loxone-weather-proxy
   goos:
     - linux
-    - darwin
     - windows
   goarch:
     - 386
@@ -41,7 +39,7 @@ dockers:
       - 'samvdb/loxone-weather-proxy:v{{ .Major }}.{{ .Minor }}'
       - 'samvdb/loxone-weather-proxy:latest'
     dockerfile: Dockerfile
-    binaries:
+    ids:
       - proxy
     build_flag_templates:
       - "--pull"

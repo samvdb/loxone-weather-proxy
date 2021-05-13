@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"encoding/json"
 	"net/http"
 	"os"
 )
@@ -79,7 +80,7 @@ func WeatherHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func ApiHandler(w http.ResponseWriter, r *http.Request) {
-		log.Info("received /interface/api call")
+		log.Info().Msg("received /interface/api call")
 		w.Header().Set("Vary", "Accept-Encoding")
 		w.Header().Set("Connection", "close")
 		w.Header().Set("Transfer-Encoding", "chunked")

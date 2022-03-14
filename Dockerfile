@@ -1,4 +1,4 @@
-FROM golang:1.14-alpine
+FROM alpine:latest
 ENV DARKSKY_APIKEY=""
 RUN apk add --no-cache  bash \
                         curl
@@ -8,6 +8,6 @@ RUN mkdir /app
 CMD ["/bin/proxy"]
 # Perform any further action as an unprivileged user.
 USER nobody:nobody
-COPY proxy /app/proxy
+COPY dist/loxone-weather-proxy_linux_amd64/proxy /app/proxy
 
 

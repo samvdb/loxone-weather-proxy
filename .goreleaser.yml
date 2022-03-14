@@ -5,8 +5,8 @@ before:
     - go mod download
 builds:
 - env:
-  - CGO_ENABLED=0
-  - GO111MODULE=on
+    - CGO_ENABLED=0
+    - GO111MODULE=on
   binary: proxy
   id: loxone-weather-proxy
   goos:
@@ -28,17 +28,11 @@ changelog:
       - Merge branch
 dockers:
   - image_templates:
-      - 'samvdb/loxone-weather-proxy:{{ .Tag }}'
-      - 'samvdb/loxone-weather-proxy:v{{ .Major }}.{{ .Minor }}'
-      - 'samvdb/loxone-weather-proxy:latest'
+      - 'ghcr.io/samvdb/{{ .ProjectName }}:{{ .Tag }}'
+      - 'ghcr.io/samvdb/{{ .ProjectName }}:latest'
     dockerfile: Dockerfile
     ids:
       - proxy
     build_flag_templates:
-      - "--pull"
+      - --platform=linux/amd64
 
-archives:
-  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
-    replacements:
-      linux: Linux
-      amd64: x86_64

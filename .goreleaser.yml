@@ -32,7 +32,7 @@ dockers:
       - 'ghcr.io/samvdb/{{ .ProjectName }}:latest'
     dockerfile: Dockerfile
     ids:
-      - proxy
+      - loxone-weather-proxy
     build_flag_templates:
       - --platform=linux/amd64
 

@@ -32,6 +32,7 @@ dockers:
       - 'ghcr.io/samvdb/{{ .ProjectName }}:{{ .Tag }}'
       - 'ghcr.io/samvdb/{{ .ProjectName }}:latest'
     dockerfile: Dockerfile
+    use: buildx
     goos: linux
     goarch: amd64
     ids:
@@ -42,6 +43,7 @@ dockers:
       - 'ghcr.io/samvdb/{{ .ProjectName }}:arm64'
     dockerfile: Dockerfile
     goos: linux
+    use: buildx
     goarch: arm64
     ids:
       - loxone-weather-proxy

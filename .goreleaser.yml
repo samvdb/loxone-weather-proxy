@@ -13,6 +13,10 @@ builds:
     - linux
   goarch:
     - amd64
+    - arm64
+    - arm
+  goarm:
+    - 7
 
 checksum:
   name_template: 'checksums.txt'
@@ -31,8 +35,20 @@ dockers:
       - 'ghcr.io/samvdb/{{ .ProjectName }}:{{ .Tag }}'
       - 'ghcr.io/samvdb/{{ .ProjectName }}:latest'
     dockerfile: Dockerfile
+    goos: linux
+    goarch: amd64
     ids:
       - loxone-weather-proxy
     build_flag_templates:
       - --platform=linux/amd64
+  - image_templates:
+      - 'ghcr.io/samvdb/{{ .ProjectName }}:arm64'
+    dockerfile: Dockerfile
+    goos: linux
+    goarm: 7
+    goarch: arm64
+    ids:
+      - loxone-weather-proxy
+    build_flag_templates:
+      - --platform=linux/arm/v7
 

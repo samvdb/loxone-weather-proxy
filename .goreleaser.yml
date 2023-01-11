@@ -6,14 +6,16 @@ before:
 builds:
   - id: linux-amd64
     binary: proxy-linux-{{ .Arch }}
-    no_unique_dist_dir: true
     env:
-      - CGO_ENABLED=1
-      - GO111MODULE=on
+    - CGO_ENABLED=0
+#      - GO111MODULE=on
     goos:
       - linux
     goarch:
       - amd64
+#    ldflags:
+#      - -s -w
+
 
 checksum:
   name_template: 'checksums.txt'
@@ -32,7 +34,7 @@ dockers:
       - 'ghcr.io/samvdb/{{ .ProjectName }}:{{ .Tag }}'
       - 'ghcr.io/samvdb/{{ .ProjectName }}:latest'
     dockerfile: Dockerfile
-#    use: buildx
+    use: docker
     goos: linux
     goarch: amd64
     build_flag_templates:

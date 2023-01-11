@@ -4,15 +4,16 @@ before:
   hooks:
     - go mod download
 builds:
-- env:
-    - CGO_ENABLED=1
-    - GO111MODULE=on
-  binary: proxy
-  id: loxone-weather-proxy
-  goos:
-    - linux
-  goarch:
-    - amd64
+  - id: linux-amd64
+    binary: proxy-linux-{{ .Arch }}
+    no_unique_dist_dir: true
+    env:
+      - CGO_ENABLED=1
+      - GO111MODULE=on
+    goos:
+      - linux
+    goarch:
+      - amd64
 
 checksum:
   name_template: 'checksums.txt'
@@ -31,12 +32,14 @@ dockers:
       - 'ghcr.io/samvdb/{{ .ProjectName }}:{{ .Tag }}'
       - 'ghcr.io/samvdb/{{ .ProjectName }}:latest'
     dockerfile: Dockerfile
-    use: buildx
+#    use: buildx
     goos: linux
     goarch: amd64
-    ids:
-      - loxone-weather-proxy
     build_flag_templates:
       - --platform=linux/amd64
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ time "2006-01-02T15:04:05Z07:00" }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
 
 

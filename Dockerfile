@@ -1,11 +1,7 @@
 FROM alpine
 ENV DARKSKY_APIKEY=""
-RUN mkdir /app
-
-# Run the executable
-# Perform any further action as an unprivileged user.
-COPY proxy /app/proxy
-#USER nobody:nobody
-ENTRYPOINT ["/app/proxy"]
+COPY proxy-linux-amd64 /usr/local/bin/proxy
+USER nobody:nobody
+ENTRYPOINT ["proxy"]
 
 

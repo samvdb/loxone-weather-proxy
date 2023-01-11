@@ -48,7 +48,7 @@ func main() {
 	r.Handle("/forecast/", c.Then(http.HandlerFunc(WeatherHandler)))
 	
 	r.Handle("/interface/api", c.Then(http.HandlerFunc(ApiHandler)))
-
+	r.Handle("/interface/api.php", c.Then(http.HandlerFunc(ApiHandler)))
 	if err := http.ListenAndServe(*httpAddr, r); err != nil {
 		log.Fatal().Str("status", "fatal").Err(err).Msg("fatal error")
 		os.Exit(1)

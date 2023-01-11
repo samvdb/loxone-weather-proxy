@@ -13,7 +13,6 @@ builds:
     - linux
   goarch:
     - amd64
-    - arm64
 
 checksum:
   name_template: 'checksums.txt'
@@ -39,14 +38,5 @@ dockers:
       - loxone-weather-proxy
     build_flag_templates:
       - --platform=linux/amd64
-  - image_templates:
-      - 'ghcr.io/samvdb/{{ .ProjectName }}:arm64'
-    dockerfile: Dockerfile
-    goos: linux
-    use: buildx
-    goarch: arm64
-    ids:
-      - loxone-weather-proxy
-    build_flag_templates:
-      - --platform=linux/arm64/v8
+
 

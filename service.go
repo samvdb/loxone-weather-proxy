@@ -6,7 +6,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"io/ioutil"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 	"os"
 	"strconv"
@@ -89,9 +88,9 @@ func (s *Service) downloadReport(longitude, latitude float64) (*Tomorrow_Forecas
 	if err != nil {
 		return nil, err
 	}
-	dump, _ := httputil.DumpResponse(resp, true)
-	log.Debug().Msg("api response received")
-	fmt.Printf("%s", dump)
+	//dump, _ := httputil.DumpResponse(resp, true)
+	//log.Debug().Msg("api response received")
+	//fmt.Printf("%s", dump)
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("invalid response with code %d, error: %s", resp.StatusCode, resp.Status)
 	}
@@ -145,17 +144,17 @@ func (s *Service) WriteXML(w http.ResponseWriter, result interface{}) {
 			windBearing += 360
 		}
 		xml += fmt.Sprintf("<DD>%.0f</DD>", windBearing)
-		xml += fmt.Sprintf("<RR1H>%5.1f</RR1H>", hourly.Values.RainIntensity)
+		xml += fmt.Sprintf("<RR1H>%0.1f</RR1H>", hourly.Values.RainIntensity)
 		xml += fmt.Sprintf("<PP0>%.0f</PP0>", hourly.Values.PressureSurfaceLevel)
 		xml += fmt.Sprintf("<RH>%.0f</RH>", hourly.Values.Humidity*100)
 		xml += fmt.Sprintf("<HI>%.1f</HI>", hourly.Values.TemperatureApparent)
-		xml += fmt.Sprintf("<RAD>%4.0f</RAD>", hourly.Values.UvIndex*100)
+		xml += fmt.Sprintf("<RAD>%4.0f</RAD>", hourly.Values.UVIndex*100)
 		xml += fmt.Sprintf("<WW>%d</WW>", s.fixIcon(hourly))
 		xml += fmt.Sprintf("<FFX>%.1f</FFX>", hourly.Values.WindGust*100/3600)
 		xml += "<LC>0</LC>"
 		xml += fmt.Sprintf("<MC>%.0f</MC>", hourly.Values.CloudCover*100)
 		xml += "<HC>0</HC>"
-		xml += fmt.Sprintf("<RAD4C>%.0f</RAD4C>", hourly.Values.UvIndex)
+		xml += fmt.Sprintf("<RAD4C>%.0f</RAD4C>", hourly.Values.UVIndex)
 		xml += "</metdata>"
 	}
 	xml += "</metdata_feature_collection>\n"
@@ -168,5 +167,5 @@ func (s *Service) WriteXML(w http.ResponseWriter, result interface{}) {
 
 func (s *Service) fixIcon(report Tomorrow_Report) int {
 	//return fixDarkSky2(report)
-	return fixTomorrow(report)
+	return getWeatherCondition(report.Values.WeatherCode)
 }

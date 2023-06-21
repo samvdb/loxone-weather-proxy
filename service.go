@@ -6,6 +6,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"io/ioutil"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -71,25 +73,31 @@ func (s *Service) GetForecast(coord string, asl string) (interface{}, error) {
 }
 
 func (s *Service) downloadReport(longitude, latitude float64) (*Tomorrow_Forecast, error) {
-	path :=
-		fmt.Sprintf("https://api.tomorrow.io/v4/forecast?location=%.3f,%.2f&apikey=%s", latitude, longitude, s.apiKey)
-	request, err := http.NewRequest("GET", path, nil)
+	request, err := http.NewRequest("GET", "https://api.tomorrow.io/v4/weather/forecast", nil)
 	if err != nil {
 		return nil, err
 	}
 	q := request.URL.Query()
-	q.Add("timesteps", "1h")
+	q.Add("location", fmt.Sprintf("%.3f,%.3f", latitude, longitude))
+	q.Add("apikey", s.apiKey)
+	q.Add("timesteps", "hourly")
 	q.Add("units", "metric")
-	request.URL.RawQuery = q.Encode()
+	decoded, _ := url.QueryUnescape(q.Encode())
+	request.URL.RawQuery = decoded
 
 	resp, err := http.Get(request.URL.String())
 	if err != nil {
 		return nil, err
 	}
+	dump, _ := httputil.DumpResponse(resp, true)
+	log.Debug().Msg("api response received")
+	fmt.Printf("%s", dump)
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("invalid response with code %d, error: %s", resp.StatusCode, resp.Status)
+	}
 	var result Tomorrow_Forecast
 	defer resp.Body.Close()
-	//dump, _ := httputil.DumpResponse(resp, true)
-	//log.Debug().Msg("api response received")
+
 	json.NewDecoder(resp.Body).Decode(&result)
 
 	return &result, nil

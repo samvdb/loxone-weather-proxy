@@ -10,6 +10,8 @@ require (
 )
 
 require (
+	github.com/bxcodec/gotcha v1.0.0-beta.8 // indirect
+	github.com/bxcodec/httpcache v1.0.0-beta.3 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/rs/xid v1.5.0 // indirect

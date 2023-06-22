@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/bxcodec/httpcache"
 	"github.com/rs/zerolog/log"
 	"io/ioutil"
 	"net/http"
@@ -16,8 +17,9 @@ import (
 var licenseExpiryDate = time.Now().AddDate(100, 0, 0)
 
 type Service struct {
-	apiKey   string
-	jsonFile string
+	apiKey    string
+	jsonFile  string
+	cacheTime int
 }
 
 func (s *Service) loadFromJson(file string) (interface{}, error) {
@@ -84,7 +86,14 @@ func (s *Service) downloadReport(longitude, latitude float64) (*Tomorrow_Forecas
 	decoded, _ := url.QueryUnescape(q.Encode())
 	request.URL.RawQuery = decoded
 
-	resp, err := http.Get(request.URL.String())
+	client := &http.Client{}
+	ttl := time.Minute * time.Duration(s.cacheTime)
+	_, err = httpcache.NewWithInmemoryCache(client, true, ttl)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.Do(request)
 	if err != nil {
 		return nil, err
 	}

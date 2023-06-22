@@ -21,9 +21,10 @@ var (
 func main() {
 
 	var (
-		httpAddr = flag.String("http.addr", ":6066", "Address for HTTP server")
-		debug    = flag.Bool("debug", false, "sets log level to debug")
-		jsonFile = flag.String("file", "", "Local json file to use instead of weather api")
+		httpAddr  = flag.String("http.addr", ":6066", "Address for HTTP server")
+		cacheTime = flag.Int("cache_time", 10, "Cache API calls for X minutes")
+		debug     = flag.Bool("debug", false, "sets log level to debug")
+		jsonFile  = flag.String("file", "", "Local json file to use instead of weather api")
 	)
 
 	flag.Parse()
@@ -41,7 +42,7 @@ func main() {
 		log.Fatal().Msg("missing required environment variable TOMORROW_APIKEY")
 		os.Exit(1)
 	}
-	service = Service{apiKey, *jsonFile}
+	service = Service{apiKey, *jsonFile, cacheTime}
 
 	r := mux.NewRouter()
 	c := LogHttp(log.Logger)

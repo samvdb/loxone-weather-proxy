@@ -27,56 +27,61 @@ package main
 //	"8000": "Thunderstorm"
 
 func getWeatherCondition(code int) int {
+
+	icon := ClearSky
 	switch code {
 	case 0:
-		return 0
+		icon = 0
 	case 1000:
-		return ClearSky
+		icon = ClearSky
 	case 1100:
-		return ClearSky
+		icon = ClearFewCirrus
 	case 1101:
-		return PartlyCloudy
+		icon = PartlyCloudy
 	case 1102:
-		return MostlyCloudy
+		icon = MostlyCloudy
 	case 1001:
-		return MostlyCloudy
+		icon = Overcast
 	case 2000:
-		return FogLowStratusClouds
+		icon = FogLowStratusClouds
 	case 2100:
-		return FogLowStratusClouds
+		icon = FogLowStratusCloudsWithFewCirrus
 	case 4000:
-		return OvercastWithRain
+		icon = OvercastWithRain
 	case 4001:
-		return OvercastWithRain
+		icon = OvercastWithRain
 	case 4200:
-		return LightRainThunderstormsLikely
+		icon = OvercastWithLightRain
 	case 4201:
-		return HeavyRainThunderstormsLikely
+		icon = OvercastWithHeavyRain
 	case 5000:
-		return MostlyCloudyAndCirrus
+		icon = OvercastWithSnow
 	case 5001:
-		return OvercastWithRain
+		icon = OvercastWithMixtureOfSnowAndRain
 	case 5100:
-		return OvercastWithSnow
+		icon = OvercastWithLightSnow
 	case 5101:
-		return StormWithHeavySnow
+		icon = OvercastWithHeavySnow
+	// checked above
 	case 6000:
-		return OvercastWithMixtureOfSnowAndRain
+		icon = OvercastWithMixtureOfSnowAndRain
 	case 6001:
-		return OvercastWithMixtureOfSnowAndRain
+		icon = OvercastWithMixtureOfSnowAndRain
 	case 6200:
-		return OvercastWithMixtureOfSnowAndRain
+		icon = OvercastWithMixtureOfSnowAndRain
 	case 6201:
-		return MixedWithSnowShowers
+		icon = MixedWithSnowShowers
 	case 7000:
-		return ClearButHazyWithCirrus
+		icon = OvercastWithMixtureOfSnowAndRain
 	case 7101:
-		return ClearButHazyWithCirrus
+		icon = OvercastWithMixtureOfSnowAndRain
 	case 7102:
-		return ClearButHazyWithCirrus
+		icon = OvercastWithMixtureOfSnowAndRain
 	case 8000:
-		return HeavyRainThunderstormsLikely
+		icon = HeavyRainThunderstormsLikely
 	default:
-		return 0
+		icon = 0
 	}
+
+	return icon
 }

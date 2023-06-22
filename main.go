@@ -42,7 +42,7 @@ func main() {
 		log.Fatal().Msg("missing required environment variable TOMORROW_APIKEY")
 		os.Exit(1)
 	}
-	service = Service{apiKey, *jsonFile, cacheTime}
+	service = Service{apiKey, *jsonFile, *cacheTime}
 
 	r := mux.NewRouter()
 	c := LogHttp(log.Logger)

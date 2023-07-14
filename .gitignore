@@ -2,3 +2,8 @@ build/
 .idea
 config.yml
 dist
+deployment/terraform.tfvars
+deployment/terraform.tfstate
+deployment/terraform.tfstate.backup
+deployment/.terraform.lock.hcl
+deployment/.terraform

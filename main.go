@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -49,6 +50,7 @@ func main() {
 	r.Handle("/forecast/", c.Then(http.HandlerFunc(WeatherHandler)))
 
 	r.Handle("/interface/api", c.Then(http.HandlerFunc(ApiHandler)))
+	r.Handle("/", c.Then(http.HandlerFunc(HealthHandler)))
 	r.Handle("/interface/api.php", c.Then(http.HandlerFunc(ApiHandler)))
 	if err := http.ListenAndServe(*httpAddr, r); err != nil {
 		log.Fatal().Str("status", "fatal").Err(err).Msg("fatal error")
@@ -77,6 +79,12 @@ func WeatherHandler(w http.ResponseWriter, r *http.Request) {
 			service.WriteXML(w, result)
 		}
 	}
+}
+
+func HealthHandler(w http.ResponseWriter, r *http.Request) {
+	log.Info().Msg("received health check")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "Server is healthy")
 }
 
 func ApiHandler(w http.ResponseWriter, r *http.Request) {

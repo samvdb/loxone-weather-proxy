@@ -12,3 +12,10 @@ variable "tomorrow_api_key" {
   type = string
   description = "tommorrow api key"
 }
+
+variable "app" {
+  type = string
+  description = "app name"
+  default = "loxone-weather"
+}
+

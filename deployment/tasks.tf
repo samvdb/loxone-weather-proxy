@@ -4,7 +4,7 @@ resource "aws_ecs_task_definition" "loxone-weather-task" {
   [
     {
       "name": "loxone-weather-proxy",
-      "image": "ghcr.io/samvdb/loxone-weather-proxy:v1.0.2",
+      "image": "ghcr.io/samvdb/loxone-weather-proxy:v1.0.3",
       "essential": true,
       "portMappings": [
         {
@@ -18,6 +18,15 @@ resource "aws_ecs_task_definition" "loxone-weather-task" {
                     "value": "${var.tomorrow_api_key}"
                 }
             ],
+
+      "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "${aws_cloudwatch_log_group.loxone-weather.name}",
+                    "awslogs-region": "eu-central-1",
+                    "awslogs-stream-prefix": "weather"
+                }
+            },
       "memory": 512,
       "cpu": 256
     }

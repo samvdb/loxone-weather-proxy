@@ -19,7 +19,7 @@ Internally loxone uses meteoblue API for it's weather services and the response 
 ## Install
 
 ```.env
-docker run -p 6066:6066 -e TOMORROW_APIKEY=XXXX samvdb/loxone-weather-proxy
+docker run -p 6066:6066 -e TOMORROW_APIKEY=XXXX ghcr.io/samvdb/loxone-weather-proxy
 ```
 
 ## Weather type

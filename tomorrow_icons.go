@@ -28,57 +28,57 @@ package main
 
 func getWeatherCondition(code int) int {
 
-	icon := ClearSky
+	icon := Clear
+
 	switch code {
 	case 0:
 		icon = 0
 	case 1000:
-		icon = ClearSky
+		icon = Clear
 	case 1100:
-		icon = ClearFewCirrus
+		icon = Bright
 	case 1101:
-		icon = PartlyCloudy
+		icon = Cloudy
 	case 1102:
-		icon = MostlyCloudy
+		icon = VeryCloudy
 	case 1001:
 		icon = Overcast
 	case 2000:
-		icon = FogLowStratusClouds
+		icon = Fog
 	case 2100:
-		icon = FogLowStratusCloudsWithFewCirrus
+		icon = LowFog
 	case 4000:
-		icon = OvercastWithRain
+		icon = Drizzle
 	case 4001:
-		icon = OvercastWithRain
+		icon = Rain
 	case 4200:
-		icon = OvercastWithLightRain
+		icon = LightRain
 	case 4201:
-		icon = OvercastWithHeavyRain
+		icon = HeavyRain
 	case 5000:
-		icon = OvercastWithSnow
+		icon = HeavySnow
 	case 5001:
-		icon = OvercastWithMixtureOfSnowAndRain
+		icon = LightSnow
 	case 5100:
-		icon = OvercastWithLightSnow
+		icon = Snow
 	case 5101:
-		icon = OvercastWithHeavySnow
-	// checked above
+		icon = StrongSnowShowers
 	case 6000:
-		icon = OvercastWithMixtureOfSnowAndRain
+		icon = LightFreezingRain
 	case 6001:
-		icon = OvercastWithMixtureOfSnowAndRain
+		icon = HeavyFreezingRain
 	case 6200:
-		icon = OvercastWithMixtureOfSnowAndRain
+		icon = LightFreezingRain
 	case 6201:
-		icon = MixedWithSnowShowers
+		icon = HeavyFreezingRain
 	case 7000:
-		icon = OvercastWithMixtureOfSnowAndRain
+		icon = Sleet
 	case 7101:
-		icon = OvercastWithMixtureOfSnowAndRain
+		icon = HeavySleet
 	case 7102:
-		icon = OvercastWithMixtureOfSnowAndRain
+		icon = LightSleet
 	case 8000:
-		icon = HeavyRainThunderstormsLikely
+		icon = Thunderstorm
 	default:
 		icon = 0
 	}
